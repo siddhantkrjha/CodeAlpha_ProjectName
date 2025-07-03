@@ -42,6 +42,7 @@ export async function getPersonalizedFinancialAdvice(
 
 const prompt = ai.definePrompt({
   name: 'personalizedFinancialAdvicePrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: PersonalizedFinancialAdviceInputSchema},
   output: {schema: PersonalizedFinancialAdviceOutputSchema},
   prompt: `You are a financial advisor specializing in credit score improvement.

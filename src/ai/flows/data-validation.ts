@@ -30,6 +30,7 @@ export async function validateUploadedData(input: ValidateUploadedDataInput): Pr
 
 const validateUploadedDataPrompt = ai.definePrompt({
   name: 'validateUploadedDataPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: ValidateUploadedDataInputSchema},
   output: {schema: ValidateUploadedDataOutputSchema},
   prompt: `You are an AI assistant that validates user provided financial data and identifies any anomalies.

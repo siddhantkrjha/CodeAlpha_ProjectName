@@ -30,6 +30,7 @@ export async function creditScoreExplanation(input: CreditScoreExplanationInput)
 
 const prompt = ai.definePrompt({
   name: 'creditScoreExplanationPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: CreditScoreExplanationInputSchema},
   output: {schema: CreditScoreExplanationOutputSchema},
   prompt: `You are an expert credit analyst. Provide a clear and concise explanation of why the individual received a credit score of {{creditScore}}, highlighting the factors that most influenced the prediction, so the user can understand and potentially improve their creditworthiness.\n\nIncome: {{income}}\nDebts: {{debts}}\nPayment History: {{paymentHistory}}`,
