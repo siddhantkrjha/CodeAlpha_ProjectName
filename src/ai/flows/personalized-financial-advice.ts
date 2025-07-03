@@ -45,16 +45,8 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: PersonalizedFinancialAdviceInputSchema},
   output: {schema: PersonalizedFinancialAdviceOutputSchema},
-  prompt: `You are a financial advisor specializing in credit score improvement.
-
-  Based on the user's credit score and financial situation, provide personalized advice to help them improve their credit score.
-
-  Credit Score: {{{creditScore}}}
-  Financial Situation: {{{financialSituation}}}
-
-  Provide specific, actionable steps the user can take.
-  Do not suggest the user seek professional help.
-`,
+  system: `You are a financial advisor specializing in credit score improvement. Based on the user's credit score and financial situation, provide personalized, specific, and actionable advice to help them improve their credit score. Do not suggest the user seek professional help.`,
+  prompt: `Credit Score: {{{creditScore}}}\nFinancial Situation: {{{financialSituation}}}`,
 });
 
 const personalizedFinancialAdviceFlow = ai.defineFlow(
