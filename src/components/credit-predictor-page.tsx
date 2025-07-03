@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useTransition } from 'react';
@@ -23,44 +22,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { getPrediction } from '@/app/actions';
-import { formSchema, type FormValues } from '@/lib/schemas';
+import { getAiPrediction } from '@/app/actions';
+import { formSchema, type FormValues, type CreditWorthinessOutput } from '@/lib/schemas';
 import { CreditCard, History, Landmark, Loader2, Sparkles } from 'lucide-react';
 import CreditScoreGauge from './credit-score-gauge';
 import { AccuracyMetrics } from './accuracy-metrics';
 import { Skeleton } from './ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 
-type PredictionResult = {
-  score: number;
-  anomalies: string[];
-  explanation: string;
-  advice: string;
-};
-
-const calculateScore = (data: FormValues): number => {
-  const { income, debts, paymentHistory } = data;
-  const paymentHistoryPoints: { [key: string]: number } = {
-    excellent: 200,
-    good: 150,
-    fair: 100,
-    poor: 50,
-  };
-
-  const dti = income > 0 ? Math.min(debts / income, 1) : 1;
-  const dtiPoints = (1 - dti) * 250;
-  const incomePoints = Math.min(income / 200000, 1) * 150;
-  const baseScore = 300;
-
-  const score = Math.round(
-    baseScore + dtiPoints + paymentHistoryPoints[paymentHistory] + incomePoints
-  );
-  return Math.max(300, Math.min(score, 850));
-};
-
 export default function CreditPredictorPage() {
   const [isPending, startTransition] = useTransition();
-  const [result, setResult] = useState<PredictionResult | null>(null);
+  const [result, setResult] = useState<CreditWorthinessOutput | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -75,21 +47,17 @@ export default function CreditPredictorPage() {
   function onSubmit(values: FormValues) {
     setResult(null);
     startTransition(async () => {
-      const predictedScore = calculateScore(values);
-      const predictionData = await getPrediction(values, predictedScore);
+      const predictionData = await getAiPrediction(values);
 
       if (predictionData.anomalies && predictionData.anomalies.length > 0) {
         toast({
-          variant: "destructive",
-          title: "Data Anomaly Detected",
-          description: predictionData.anomalies[0],
+          variant: 'destructive',
+          title: 'Data Anomaly Detected',
+          description: predictionData.anomalies.join(' '),
         });
       }
 
-      setResult({
-        score: predictedScore,
-        ...predictionData,
-      });
+      setResult(predictionData);
     });
   }
 
@@ -102,7 +70,7 @@ export default function CreditPredictorPage() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
       <Card className="sticky top-8">
         <CardHeader>
-          <CardTitle>Your Financial Details</CardTitle>
+          <CardTitle>Financial Profile Input</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -170,10 +138,10 @@ export default function CreditPredictorPage() {
                   {isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Predicting...
+                      Analyzing...
                     </>
                   ) : (
-                    'Predict Credit Score'
+                    'Assess Creditworthiness'
                   )}
                 </Button>
                 {(result || isPending) && (
@@ -191,7 +159,7 @@ export default function CreditPredictorPage() {
         {isPending && (
           <div className="space-y-8">
             <Card>
-              <CardHeader><CardTitle>Credit Score Prediction</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Creditworthiness Prediction</CardTitle></CardHeader>
               <CardContent className="flex flex-col items-center justify-center">
                 <Skeleton className="h-48 w-full" />
               </CardContent>
@@ -211,7 +179,7 @@ export default function CreditPredictorPage() {
           <>
             <Card className="bg-gradient-to-br from-primary/10 to-background">
               <CardHeader>
-                <CardTitle>Credit Score Prediction</CardTitle>
+                <CardTitle>Creditworthiness Prediction</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col items-center justify-center">
                 <CreditScoreGauge score={result.score} />
@@ -232,7 +200,7 @@ export default function CreditPredictorPage() {
 
             <Alert className="border-accent bg-accent/10">
               <Sparkles className="h-4 w-4 text-accent" />
-              <AlertTitle className="text-accent">Personalized Financial Advice</AlertTitle>
+              <AlertTitle className="text-accent">Personalized Improvement Plan</AlertTitle>
               <AlertDescription>
                 {result.advice}
               </AlertDescription>

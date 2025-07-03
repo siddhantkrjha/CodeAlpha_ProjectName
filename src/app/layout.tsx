@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'CreditWise Predictor',
-  description: 'Predict your creditworthiness using our AI-powered tool',
+  title: 'Creditworthiness Assessment AI',
+  description: 'Leverage AI to assess creditworthiness based on financial data.',
 };
 
 export default function RootLayout({
