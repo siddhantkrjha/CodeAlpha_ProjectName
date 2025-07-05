@@ -33,17 +33,20 @@ const analysisPrompt = ai.definePrompt({
     model: 'googleai/gemini-1.5-flash-latest',
     input: { schema: AnalysisInputSchema },
     output: { schema: AnalysisOutputSchema },
-    system: `You are an expert credit analyst AI. Your task is to analyze pre-processed financial data.
-    Given the user's financial data and their pre-calculated credit score, you will perform the following steps:
+    prompt: `You are an expert credit analyst AI. Your task is to analyze financial data and a pre-calculated credit score.
 
-    1.  **Data Validation**: First, analyze the input data for any anomalies or inconsistencies. An anomaly is an entry that seems unusual or out of a normal range (e.g., debts higher than income). If you find any, list them in the 'anomalies' array. If not, the array should be empty.
-    2.  **Explanation Generation**: Based on the calculated score and the input data, provide a clear explanation. Highlight the key factors (Debt-to-income ratio, payment history, income level) that most influenced the score, both positively and negatively.
-    3.  **Advice Generation**: Provide personalized, specific, and actionable advice to help the user improve their credit score. The advice should be directly related to the weaknesses identified in their financial profile. Do not suggest the user seek professional help.`,
-    prompt: `Analyze the following financial data:
+    Your response must be a JSON object that conforms to the specified schema.
+
+    **Analysis Steps:**
+    1.  **Data Validation**: Analyze the input data for anomalies. An anomaly is an entry that seems unusual or out of a normal range (e.g., debts higher than income). List any findings in the 'anomalies' array. If none, the array must be empty.
+    2.  **Explanation Generation**: Provide a clear explanation for the score. Highlight the key factors (Debt-to-income ratio, payment history, income level) that influenced it, both positively and negatively.
+    3.  **Advice Generation**: Provide personalized, specific, and actionable advice to help the user improve their credit score, based on weaknesses in their profile. Do not suggest seeking professional help.
+
+    **Financial Data to Analyze:**
     - Annual Income: {{income}}
     - Total Debts: {{debts}}
     - Payment History: {{paymentHistory}}
-    - Calculated Credit Score: {{score}}`
+    - Calculated Credit Score: {{score}}`,
 });
 
 const predictCreditWorthinessFlow = ai.defineFlow(

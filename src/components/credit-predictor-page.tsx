@@ -26,9 +26,9 @@ import { getAiPrediction } from '@/app/actions';
 import { formSchema, type FormValues, type CreditWorthinessOutput } from '@/lib/schemas';
 import { CreditCard, History, Landmark, Loader2, Sparkles } from 'lucide-react';
 import CreditScoreGauge from './credit-score-gauge';
-import { AccuracyMetrics } from './accuracy-metrics';
 import { Skeleton } from './ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { WelcomeCard } from './welcome-card';
 
 export default function CreditPredictorPage() {
   const [isPending, startTransition] = useTransition();
@@ -209,7 +209,7 @@ export default function CreditPredictorPage() {
         )}
         
         {!result && !isPending && (
-          <AccuracyMetrics />
+          <WelcomeCard />
         )}
       </div>
     </div>
